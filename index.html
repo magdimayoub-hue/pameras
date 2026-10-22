@@ -185,6 +185,10 @@ section.sec{padding-block:88px}
 .slide-year{font:600 30px/1 var(--f-display);font-variant-numeric:tabular-nums}
 .slide-city{font:500 12px var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
 .slide p{font-size:14px;color:var(--muted)}
+.slide-video{display:block;width:100%;aspect-ratio:4/3;object-fit:contain;background:#0b0b0b}
+.slide-video-cap{padding:12px 18px;border-bottom:1px solid var(--line);display:grid;gap:4px}
+.slide-video-cap b{font:600 14px/1.35 var(--f-body);color:var(--ink)}
+.slide-video-cap p{font-size:13px;line-height:1.45}
 
 /* globe */
 .impl{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center}
@@ -417,7 +421,7 @@ footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
       <div class="car-btns"><button type="button" id="carPrev" aria-label="Previous">←</button><button type="button" id="carNext" aria-label="Next">→</button></div>
     </div>
     <div class="carousel" id="carousel">
-      <article class="slide"><div class="ph"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-8 8"/></svg><b>Congress photo · Dubai</b><small>4:3 · 1600×1200 px</small></div></div><div class="slide-body"><span class="slide-city">Dubai · February</span><span class="slide-year">2015</span><p>The first PAME ERAS conference, recorded by the ERAS® Society as the 1st Pan Arabian ERAS meeting.</p></div></article>
+      <article class="slide"><video class="slide-video" controls preload="metadata" playsinline poster="media/alaan-tv-interview.jpg" src="media/alaan-tv-interview.mp4" aria-label="Enhanced Recovery After Surgery – Dr. Medhat Shalabi, Alaan TV interview"></video><div class="slide-video-cap"><b>Enhanced Recovery After Surgery – Dr. Medhat Shalabi</b><p>Dr. Medhat Shalabi, Consultant and Head of the Anaesthesia Department at Al Zahra Hospital Dubai, speaks on Alaan TV about the steps to enhanced recovery after surgery.</p></div><div class="slide-body"><span class="slide-city">Dubai · February</span><span class="slide-year">2015</span><p>The first PAME ERAS conference, recorded by the ERAS® Society as the 1st Pan Arabian ERAS meeting.</p></div></article>
       <article class="slide"><div class="ph"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-8 8"/></svg><b>Congress photo · Cairo</b><small>4:3 · 1600×1200 px</small></div></div><div class="slide-body"><span class="slide-city">Cairo</span><span class="slide-year">2017</span><p>The second PAME ERAS conference, held in Egypt.</p></div></article>
       <article class="slide"><div class="ph"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-8 8"/></svg><b>Congress photo · Muscat</b><small>4:3 · 1600×1200 px</small></div></div><div class="slide-body"><span class="slide-city">Muscat · February</span><span class="slide-year">2019</span><p>The 3rd Middle East ERAS Conference with Oman's Ministry of Health, which launched Oman's enhanced recovery protocol after caesarean section.</p></div></article>
       <article class="slide"><div class="ph"><div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2"/><path d="M21 16l-5-5-8 8"/></svg><b>Workshop photo</b><small>4:3 · 1600×1200 px</small></div></div><div class="slide-body"><span class="slide-city">Hospital teams</span><span class="slide-year">ERAS</span><p>Implementation workshops with surgical, anaesthesia and nursing teams. Add a photo and caption.</p></div></article>
