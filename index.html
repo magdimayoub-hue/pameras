@@ -1,0 +1,712 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Magdi Ayoub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap">
+<style>
+/* Layout: a clinical "case file" — sticky nav, ECG-trace hero, alternating light sheets and one deep ink band, mono labels as chart annotations */
+:root{
+  --bg:#F2F5F4; --surface:#FFFFFF; --ink:#0E2A30; --muted:#4F6569; --line:#D3DDDB;
+  --teal:#0F6E6E; --teal-soft:#DCEBEA; --amber:#C8701E; --amber-soft:#F7E6D3;
+  --band:#0E2A30; --on-band:#E8F0EE; --on-band-muted:#9DB4B6;
+  --f-display:"Bricolage Grotesque", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Instrument Sans", "Helvetica Neue", Arial, system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --f-ar:"IBM Plex Sans Arabic", "Segoe UI", Tahoma, sans-serif;
+  --r:14px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0A1A1E; --surface:#10262B; --ink:#E4EEEC; --muted:#93A9AC; --line:#233C41;
+  --teal:#56B7B1; --teal-soft:#15363A; --amber:#EE9E4E; --amber-soft:#3A2A19;
+  --band:#06120F; --on-band:#E4EEEC; --on-band-muted:#8BA3A5; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0A1A1E; --surface:#10262B; --ink:#E4EEEC; --muted:#93A9AC; --line:#233C41;
+  --teal:#56B7B1; --teal-soft:#15363A; --amber:#EE9E4E; --amber-soft:#3A2A19;
+  --band:#06120F; --on-band:#E4EEEC; --on-band-muted:#8BA3A5; color-scheme:dark }
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+html[lang="ar"] body{font-family:var(--f-ar)}
+html[lang="ar"] h1,html[lang="ar"] h2,html[lang="ar"] h3{font-family:var(--f-ar);letter-spacing:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--amber);outline-offset:3px;border-radius:6px}
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--f-display);line-height:1.08;text-wrap:balance;margin:0}
+p{margin:0}
+.label{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--teal)}
+html[lang="ar"] .label{letter-spacing:0;font-family:var(--f-ar);font-weight:500}
+
+/* nav */
+header.nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.nav .wrap{display:flex;align-items:center;gap:16px;padding-block:12px}
+.mark{display:flex;align-items:center;gap:10px;text-decoration:none;font-family:var(--f-display);font-weight:700;font-size:18px}
+.mark i{width:34px;height:34px;border-radius:10px;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-style:normal;font-size:15px;letter-spacing:.02em}
+.nav ul{display:flex;gap:22px;list-style:none;margin:0 auto;padding:0}
+.nav ul a{text-decoration:none;font-size:14px;color:var(--muted);font-weight:500}
+.nav ul a:hover{color:var(--ink)}
+.nav-tools{display:flex;gap:8px;margin-inline-start:auto}
+.chip-btn{font:500 13px/1 var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:9px 12px;border-radius:999px;cursor:pointer}
+.chip-btn:hover{border-color:var(--teal)}
+.btn{display:inline-flex;align-items:center;gap:8px;font:600 15px/1 var(--f-body);padding:14px 20px;border-radius:999px;text-decoration:none;border:1px solid transparent;cursor:pointer}
+.btn-primary{background:var(--amber);color:#1B0F04}
+.btn-primary:hover{filter:brightness(1.06)}
+.btn-ghost{border-color:var(--line);color:var(--ink);background:transparent}
+.btn-ghost:hover{border-color:var(--teal)}
+html[lang="ar"] .btn,html[lang="ar"] .chip-btn{font-family:var(--f-ar)}
+@media (max-width:860px){.nav ul{display:none}}
+
+/* hero */
+.hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+#trace{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:.9;pointer-events:none}
+.hero .wrap{position:relative;display:grid;grid-template-columns:1.25fr .75fr;gap:48px;align-items:center;padding-block:72px 64px}
+.hero-copy{display:grid;gap:22px;min-width:0}
+.hero h1{font-size:clamp(40px,6.4vw,78px);font-weight:800;letter-spacing:-.025em}
+.hero h1 em{font-style:normal;color:var(--teal)}
+.hero .lede{font-size:clamp(17px,1.7vw,20px);color:var(--muted);max-width:56ch}
+.hero-ctas{display:flex;flex-wrap:wrap;gap:12px}
+.vitals{display:flex;flex-wrap:wrap;gap:8px 18px;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.vitals span::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--teal);margin-inline-end:7px;vertical-align:1px}
+.vitals span.live::before{background:var(--amber);animation:pulse 1.6s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--amber) 55%,transparent)}50%{box-shadow:0 0 0 6px transparent}}
+@media (prefers-reduced-motion: reduce){.vitals span.live::before{animation:none}}
+
+/* placeholder frames */
+.ph{position:relative;border-radius:var(--r);border:1.5px dashed color-mix(in srgb,var(--teal) 55%,var(--line));background:
+  repeating-linear-gradient(135deg,transparent 0 10px,color-mix(in srgb,var(--teal) 7%,transparent) 10px 11px),var(--teal-soft);
+  display:grid;place-items:center;text-align:center;color:var(--teal);max-width:100%}
+.ph .ph-in{display:grid;gap:6px;justify-items:center;padding:16px}
+.ph svg{width:34px;height:34px}
+.ph b{font:600 14px/1.3 var(--f-body)}
+.ph small{font:12px/1.4 var(--f-mono);color:var(--muted)}
+.portrait{aspect-ratio:4/5;width:100%}
+.portrait-wrap{position:relative;justify-self:end;width:min(100%,380px)}
+.portrait-wrap .tag{position:absolute;inset-inline-start:-18px;bottom:28px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:grid;gap:2px;box-shadow:0 10px 30px -18px rgba(5,30,35,.45)}
+.portrait-wrap .tag strong{font:700 15px/1.2 var(--f-display)}
+.portrait-wrap .tag span{font:12px/1.3 var(--f-mono);color:var(--muted)}
+@media (max-width:860px){
+  .hero .wrap{grid-template-columns:1fr;padding-block:44px 40px;gap:32px}
+  .portrait-wrap{justify-self:start;width:min(100%,320px)}
+  .portrait-wrap .tag{inset-inline-start:auto;inset-inline-end:-8px}
+}
+
+/* stats band */
+.band{background:var(--band);color:var(--on-band)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding-block:8px}
+.stat{padding:26px 22px;border-inline-start:1px solid color-mix(in srgb,var(--on-band) 14%,transparent);display:grid;gap:6px;min-width:0}
+.stat:first-child{border-inline-start:0}
+.stat .num{font:800 clamp(34px,4vw,50px)/1 var(--f-display);font-variant-numeric:tabular-nums;color:var(--on-band)}
+.stat .num sup{font-size:.45em;color:var(--amber);margin-inline-start:2px}
+.stat p{font-size:14px;color:var(--on-band-muted)}
+@media (max-width:760px){.stats{grid-template-columns:1fr 1fr}.stat:nth-child(3){border-inline-start:0}.stat{border-top:1px solid color-mix(in srgb,var(--on-band) 14%,transparent)}.stat:nth-child(-n+2){border-top:0}}
+
+/* sections */
+section.sec{padding-block:88px}
+.sec-head{display:grid;gap:12px;margin-bottom:40px;max-width:720px}
+.sec-head h2{font-size:clamp(30px,4vw,48px);font-weight:700;letter-spacing:-.02em}
+.sec-head p{color:var(--muted);font-size:17px;max-width:62ch}
+@media (max-width:760px){section.sec{padding-block:60px}}
+
+/* pillars */
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.pillar{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:26px;display:grid;gap:14px;align-content:start;transition:transform .25s ease,border-color .25s ease;min-width:0}
+.pillar:hover{transform:translateY(-4px);border-color:var(--teal)}
+.pillar .ico{width:48px;height:48px;border-radius:12px;background:var(--teal-soft);color:var(--teal);display:grid;place-items:center}
+.pillar .ico svg{width:26px;height:26px}
+.pillar h3{font-size:22px;font-weight:700}
+.pillar p{color:var(--muted);font-size:15px}
+.pillar ul{margin:0;padding:0;list-style:none;display:grid;gap:8px;border-top:1px solid var(--line);padding-top:14px}
+.pillar li{font-size:14px;display:flex;gap:10px}
+.pillar li::before{content:"";flex:0 0 14px;height:2px;background:var(--amber);margin-top:11px}
+@media (max-width:900px){.pillars{grid-template-columns:1fr}}
+
+/* engagements */
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px}
+.filters button{font:500 14px/1 var(--f-body);padding:10px 16px;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--muted);cursor:pointer}
+.filters button[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+html[lang="ar"] .filters button{font-family:var(--f-ar)}
+.cases{display:grid;grid-template-columns:repeat(2,1fr);gap:18px}
+.case{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;display:grid;grid-template-rows:auto 1fr;min-width:0}
+.case-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:14px 22px;border-bottom:1px solid var(--line);font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.case-top .kind{color:var(--teal);text-transform:uppercase;letter-spacing:.06em}
+.case-body{padding:22px;display:grid;gap:14px;align-content:start}
+.case h3{font-size:21px;font-weight:700}
+.case dl{display:grid;grid-template-columns:auto 1fr;gap:8px 16px;margin:0;font-size:14px}
+.case dt{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+html[lang="ar"] .case dt{font-family:var(--f-ar);letter-spacing:0}
+.case dd{margin:0}
+.outcome{color:var(--ink);font-weight:500}
+@media (max-width:820px){.cases{grid-template-columns:1fr}}
+
+/* products */
+.alt{background:var(--surface);border-block:1px solid var(--line)}
+.products{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}
+.product{display:grid;gap:16px;border:1px solid var(--line);border-radius:var(--r);padding:18px;background:var(--bg);min-width:0}
+.device{aspect-ratio:16/10;width:100%}
+.product-meta{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.product h3{font-size:22px;font-weight:700}
+.badge{font:500 11px/1 var(--f-mono);text-transform:uppercase;letter-spacing:.07em;padding:7px 10px;border-radius:999px;border:1px solid}
+.badge.live{color:var(--teal);border-color:var(--teal);background:var(--teal-soft)}
+.badge.pilot{color:var(--amber);border-color:var(--amber);background:var(--amber-soft)}
+.badge.concept{color:var(--muted);border-color:var(--line)}
+.product p{color:var(--muted);font-size:15px}
+@media (max-width:820px){.products{grid-template-columns:1fr}}
+
+/* timeline */
+.timeline{position:relative;display:grid;gap:0;max-width:820px}
+.timeline::before{content:"";position:absolute;inset-block:8px;inset-inline-start:7px;width:2px;background:linear-gradient(var(--teal),var(--amber))}
+.t-item{position:relative;display:grid;grid-template-columns:120px 1fr;gap:20px;padding-block:18px;padding-inline-start:36px}
+.t-item::before{content:"";position:absolute;inset-inline-start:0;top:24px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid var(--teal)}
+.t-item.now::before{border-color:var(--amber);background:var(--amber)}
+.t-year{font:500 14px/1.6 var(--f-mono);color:var(--teal);padding-top:3px}
+.t-item h3{font-size:20px;font-weight:700;margin-bottom:4px}
+.t-item p{color:var(--muted);font-size:15px}
+@media (max-width:600px){.t-item{grid-template-columns:1fr;gap:4px}}
+
+/* regions */
+.regions{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+#regionMap{width:100%;aspect-ratio:1/1;max-width:520px;display:block}
+.region-list{display:grid;gap:12px}
+.region{display:flex;gap:14px;align-items:baseline;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.region b{font:700 18px/1.2 var(--f-display);min-width:0}
+.region span{font:12px/1.4 var(--f-mono);color:var(--muted);margin-inline-start:auto;text-align:end}
+@media (max-width:820px){.regions{grid-template-columns:1fr}}
+
+/* insights */
+.posts{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.post{display:grid;gap:12px;align-content:start;text-decoration:none;padding:22px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);transition:border-color .2s}
+.post:hover{border-color:var(--teal)}
+.post h3{font-size:19px;font-weight:700}
+.post p{font-size:14px;color:var(--muted)}
+.post .more{font:500 13px var(--f-mono);color:var(--amber)}
+@media (max-width:900px){.posts{grid-template-columns:1fr}}
+
+/* contact */
+.contact{display:grid;grid-template-columns:.9fr 1.1fr;gap:48px}
+.contact .sec-head{margin:0}
+.contact-card{display:grid;gap:14px;margin-top:28px}
+.copyline{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px 16px;border:1px solid color-mix(in srgb,var(--on-band) 20%,transparent);border-radius:12px}
+.copyline code{font:14px var(--f-mono);color:var(--on-band);overflow-wrap:anywhere;min-width:0}
+.copyline button{margin-inline-start:auto}
+form.enquiry{display:grid;gap:14px;background:color-mix(in srgb,var(--on-band) 6%,transparent);border:1px solid color-mix(in srgb,var(--on-band) 16%,transparent);border-radius:var(--r);padding:24px}
+.field{display:grid;gap:6px}
+.field label{font:500 13px var(--f-body);color:var(--on-band-muted)}
+html[lang="ar"] .field label{font-family:var(--f-ar)}
+.field input,.field select,.field textarea{font:15px var(--f-body);padding:12px 14px;border-radius:10px;border:1px solid color-mix(in srgb,var(--on-band) 22%,transparent);background:color-mix(in srgb,var(--band) 70%,#000 30%);color:var(--on-band);width:100%}
+.field textarea{min-height:110px;resize:vertical}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-note{font-size:14px;color:var(--amber);min-height:1.4em}
+.band .sec-head p{color:var(--on-band-muted)}
+.band .label{color:var(--amber)}
+.band .chip-btn{background:transparent;color:var(--on-band);border-color:color-mix(in srgb,var(--on-band) 30%,transparent)}
+@media (max-width:860px){.contact{grid-template-columns:1fr;gap:32px}.row2{grid-template-columns:1fr}}
+
+footer{padding-block:28px;border-top:1px solid color-mix(in srgb,var(--on-band) 12%,transparent);font:13px var(--f-mono);color:var(--on-band-muted)}
+footer .wrap{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+/* reveal: visible at rest, only a small lift */
+.rv{transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+.rv.pre{transform:translateY(18px)}
+@media (prefers-reduced-motion: reduce){.rv,.rv.pre{transform:none;transition:none}.pillar{transition:none}}
+
+/* mobile sticky contact */
+.fab{position:fixed;z-index:40;inset-inline-end:calc(16px + env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));display:none;box-shadow:0 14px 30px -12px rgba(0,0,0,.45)}
+@media (max-width:860px){.fab{display:inline-flex}}
+</style>
+
+<header class="nav">
+  <div class="wrap">
+    <a class="mark" href="#top" aria-label="Home"><i>MA</i><span>Magdi Ayoub</span></a>
+    <ul>
+      <li><a href="#work" data-i18n="nav_work">What I do</a></li>
+      <li><a href="#cases" data-i18n="nav_cases">Engagements</a></li>
+      <li><a href="#products" data-i18n="nav_products">Products</a></li>
+      <li><a href="#journey" data-i18n="nav_journey">Journey</a></li>
+      <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+    </ul>
+    <div class="nav-tools">
+      <button class="chip-btn" id="langBtn" type="button" aria-label="Switch language">عربي</button>
+      <button class="chip-btn" id="themeBtn" type="button" aria-label="Toggle dark mode">◐</button>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+<!-- HERO -->
+<section class="hero">
+  <canvas id="trace" aria-hidden="true"></canvas>
+  <div class="wrap">
+    <div class="hero-copy">
+      <span class="label" data-i18n="hero_label">Healthcare consultant · AI product strategist · Cairo</span>
+      <h1 data-i18n-html="hero_h1">Better surgical systems. <em>Smarter</em> health products.</h1>
+      <p class="lede" data-i18n="hero_lede">I help hospitals across Africa and the Middle East run safer, leaner surgical services, and I build AI products that turn clinical data into lasting value.</p>
+      <div class="hero-ctas">
+        <a class="btn btn-primary" href="#contact" data-i18n="cta_work">Work with me</a>
+        <a class="btn btn-ghost" href="#cases" data-i18n="cta_cases">See engagements</a>
+      </div>
+      <div class="vitals">
+        <span class="live" data-i18n="v1">Available for advisory work</span>
+        <span data-i18n="v2">English · العربية</span>
+        <span data-i18n="v3">Africa &amp; Middle East</span>
+      </div>
+    </div>
+    <div class="portrait-wrap rv">
+      <div class="ph portrait">
+        <div class="ph-in">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>
+          <b data-i18n="ph_photo">Your headshot</b>
+          <small>4:5 · 1200×1500 px</small>
+        </div>
+      </div>
+      <div class="tag"><strong data-i18n="tag_title">Principal Consultant</strong><span>Medtronic IHS · since 2018</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="band">
+  <div class="wrap stats">
+    <div class="stat"><div class="num">8<sup>+</sup></div><p data-i18n="s1">years in hospital consulting</p></div>
+    <div class="stat"><div class="num">5</div><p data-i18n="s2">service lines, from surgery to supply chain</p></div>
+    <div class="stat"><div class="num">00<sup>✎</sup></div><p data-i18n="s3">hospitals assessed (add your figure)</p></div>
+    <div class="stat"><div class="num">4</div><p data-i18n="s4">health products in build or live</p></div>
+  </div>
+</div>
+
+<!-- WHAT I DO -->
+<section class="sec" id="work">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="label" data-i18n="work_label">What I do</span>
+      <h2 data-i18n="work_h">Three practices, one goal: better outcomes per bed, per theatre, per patient.</h2>
+    </div>
+    <div class="pillars">
+      <article class="pillar rv">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></div>
+        <h3 data-i18n="p1_h">Hospital & surgical consulting</h3>
+        <p data-i18n="p1_p">Diagnostics and improvement programmes for operating theatres, perioperative pathways and clinical services.</p>
+        <ul>
+          <li data-i18n="p1_a">Surgical activity & capacity assessments</li>
+          <li data-i18n="p1_b">ERAS maturity & OR data management</li>
+          <li data-i18n="p1_c">Hypertension & renal denervation programmes</li>
+        </ul>
+      </article>
+      <article class="pillar rv">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="7" rx="1.5"/><rect x="14" y="4" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><path d="M14 17.5h7M17.5 14v7"/></svg></div>
+        <h3 data-i18n="p2_h">Supply chain advisory</h3>
+        <p data-i18n="p2_p">From inventory scans to control-tower design for public and private hospital networks.</p>
+        <ul>
+          <li data-i18n="p2_a">Supply chain scans & gap analysis</li>
+          <li data-i18n="p2_b">Control tower proposals</li>
+          <li data-i18n="p2_c">Greenfield hospital readiness</li>
+        </ul>
+      </article>
+      <article class="pillar rv">
+        <div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><circle cx="4.5" cy="6" r="1.8"/><circle cx="19.5" cy="6" r="1.8"/><circle cx="4.5" cy="18" r="1.8"/><circle cx="19.5" cy="18" r="1.8"/><path d="M6 7l3.6 3M18 7l-3.6 3M6 17l3.6-3M18 17l-3.6-3"/></svg></div>
+        <h3 data-i18n="p3_h">AI product strategy</h3>
+        <p data-i18n="p3_p">Vertical AI that is hard to copy, built on data flywheels, EMR integration and clinical networks.</p>
+        <ul>
+          <li data-i18n="p3_a">Product strategy beyond API wrappers</li>
+          <li data-i18n="p3_b">Clinical data platforms & registries</li>
+          <li data-i18n="p3_c">PoC to pilot in weeks, not quarters</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ENGAGEMENTS -->
+<section class="sec alt" id="cases">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="label" data-i18n="cases_label">Selected engagements</span>
+      <h2 data-i18n="cases_h">Recent work, anonymised.</h2>
+      <p data-i18n="cases_p">Client names are withheld. Each case shows the question, the approach and what changed.</p>
+    </div>
+    <div class="filters" role="group" aria-label="Filter engagements">
+      <button type="button" aria-pressed="true" data-f="all" data-i18n="f_all">All</button>
+      <button type="button" aria-pressed="false" data-f="surgery" data-i18n="f_surgery">Surgery</button>
+      <button type="button" aria-pressed="false" data-f="supply" data-i18n="f_supply">Supply chain</button>
+      <button type="button" aria-pressed="false" data-f="programme" data-i18n="f_prog">Clinical programmes</button>
+    </div>
+    <div class="cases">
+      <article class="case rv" data-k="surgery">
+        <div class="case-top"><span class="kind" data-i18n="k_surgery">Surgery</span><span>Cairo · 2026</span></div>
+        <div class="case-body">
+          <h3 data-i18n="c1_h">Surgical activity assessment, specialised university hospital</h3>
+          <dl>
+            <dt data-i18n="dt_q">Question</dt><dd data-i18n="c1_q">Where is theatre capacity being lost, and why?</dd>
+            <dt data-i18n="dt_a">Approach</dt><dd data-i18n="c1_a">Theatre utilisation audit, pathway mapping, staff interviews.</dd>
+            <dt data-i18n="dt_o">Outcome</dt><dd class="outcome" data-i18n="c1_o">Prioritised improvement roadmap. Add your result.</dd>
+          </dl>
+        </div>
+      </article>
+      <article class="case rv" data-k="supply">
+        <div class="case-top"><span class="kind" data-i18n="k_supply">Supply chain</span><span>Canal region · 2026</span></div>
+        <div class="case-body">
+          <h3 data-i18n="c2_h">Supply chain scan & control tower proposal, public hospital network</h3>
+          <dl>
+            <dt data-i18n="dt_q">Question</dt><dd data-i18n="c2_q">How mature is the hospital supply chain, and what would scale?</dd>
+            <dt data-i18n="dt_a">Approach</dt><dd data-i18n="c2_a">On-site scan of stores, ordering and consumption data.</dd>
+            <dt data-i18n="dt_o">Outcome</dt><dd class="outcome" data-i18n="c2_o">Pilot-site design with a path to network scale-up.</dd>
+          </dl>
+        </div>
+      </article>
+      <article class="case rv" data-k="programme">
+        <div class="case-top"><span class="kind" data-i18n="k_prog">Clinical programme</span><span>Riyadh · 2026</span></div>
+        <div class="case-body">
+          <h3 data-i18n="c3_h">Hypertension clinic & renal denervation service, military medical city</h3>
+          <dl>
+            <dt data-i18n="dt_q">Question</dt><dd data-i18n="c3_q">How to set up a resistant-hypertension pathway that leadership will fund?</dd>
+            <dt data-i18n="dt_a">Approach</dt><dd data-i18n="c3_a">Service design and business case with the clinical leads.</dd>
+            <dt data-i18n="dt_o">Outcome</dt><dd class="outcome" data-i18n="c3_o">Proposal submitted to executive leadership.</dd>
+          </dl>
+        </div>
+      </article>
+      <article class="case rv" data-k="surgery">
+        <div class="case-top"><span class="kind" data-i18n="k_surgery">Surgery</span><span>Cairo · 2026</span></div>
+        <div class="case-body">
+          <h3 data-i18n="c4_h">General surgery assessment, research institute hospital</h3>
+          <dl>
+            <dt data-i18n="dt_q">Question</dt><dd data-i18n="c4_q">How does the surgical service compare with best practice?</dd>
+            <dt data-i18n="dt_a">Approach</dt><dd data-i18n="c4_a">ERAS maturity checklist, outcome KPIs, OR data review.</dd>
+            <dt data-i18n="dt_o">Outcome</dt><dd class="outcome" data-i18n="c4_o">Benchmark report with quick wins. Add your result.</dd>
+          </dl>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="sec" id="products">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="label" data-i18n="prod_label">Products</span>
+      <h2 data-i18n="prod_h">Health software I've built or am building.</h2>
+    </div>
+    <div class="products">
+      <article class="product rv">
+        <div class="ph device"><div class="ph-in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg><b data-i18n="ph_shot">Product screenshot</b><small>16:10 · 1600×1000 px</small></div></div>
+        <div class="product-meta"><h3>DataPal</h3><span class="badge pilot" data-i18n="b_pilot">Pilot</span></div>
+        <p data-i18n="pr1">An AI-native data capture platform for clinical research, built as a modern alternative to REDCap.</p>
+      </article>
+      <article class="product rv">
+        <div class="ph device"><div class="ph-in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.5h2"/></svg><b data-i18n="ph_shot">Product screenshot</b><small>16:10 · 1600×1000 px</small></div></div>
+        <div class="product-meta"><h3>NABD Academy</h3><span class="badge live" data-i18n="b_live">Live</span></div>
+        <p data-i18n="pr2">A mobile app where interventional cardiologists share cases, with AI that structures each case for peer review.</p>
+      </article>
+      <article class="product rv">
+        <div class="ph device"><div class="ph-in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M7 9v5c0 1.5 2.2 3 5 3s5-1.5 5-3V9"/></svg><b data-i18n="ph_shot">Product screenshot</b><small>16:10 · 1600×1000 px</small></div></div>
+        <div class="product-meta"><h3>ElProf</h3><span class="badge concept" data-i18n="b_concept">Concept</span></div>
+        <p data-i18n="pr3">A marketplace for accredited CME courses across Egypt and the Middle East.</p>
+      </article>
+      <article class="product rv">
+        <div class="ph device"><div class="ph-in"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M9 4h6v3H9z"/><rect x="5" y="5.5" width="14" height="16" rx="2"/><path d="M9 12l2 2 4-4M9 17.5h6"/></svg><b data-i18n="ph_shot">Product screenshot</b><small>16:10 · 1600×1000 px</small></div></div>
+        <div class="product-meta"><h3 data-i18n="pr4_h">ERAS Maturity Assessment</h3><span class="badge pilot" data-i18n="b_pilot">Pilot</span></div>
+        <p data-i18n="pr4">A scored checklist that measures how closely a hospital follows international ERAS guidelines.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- JOURNEY -->
+<section class="sec alt" id="journey">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="label" data-i18n="j_label">Journey</span>
+      <h2 data-i18n="j_h">From consultant to regional lead.</h2>
+    </div>
+    <div class="timeline">
+      <div class="t-item now rv"><div class="t-year">2025 →</div><div><h3 data-i18n="t1_h">Solution Lead, Resistant Hypertension & RDN</h3><p data-i18n="t1_p">Leading the renal denervation solution across the region.</p></div></div>
+      <div class="t-item rv"><div class="t-year">2023 →</div><div><h3 data-i18n="t2_h">Principal Consultant</h3><p data-i18n="t2_p">Senior lead on hospital performance and supply chain engagements.</p></div></div>
+      <div class="t-item rv"><div class="t-year">2022 →</div><div><h3 data-i18n="t3_h">Consulting Lead, Africa</h3><p data-i18n="t3_p">Building the consulting practice across African markets.</p></div></div>
+      <div class="t-item rv"><div class="t-year">2018</div><div><h3 data-i18n="t4_h">Senior Consultant, Medtronic IHS</h3><p data-i18n="t4_p">Joined Integrated Health Solutions to deliver hospital improvement programmes.</p></div></div>
+      <div class="t-item rv"><div class="t-year">Before</div><div><h3 data-i18n="t5_h">Earlier career</h3><p data-i18n="t5_p">Add your previous roles and education here.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- REGIONS -->
+<section class="sec">
+  <div class="wrap regions">
+    <canvas id="regionMap" aria-label="Map of the regions I work in"></canvas>
+    <div>
+      <div class="sec-head rv" style="margin-bottom:24px">
+        <span class="label" data-i18n="r_label">Where I work</span>
+        <h2 data-i18n="r_h">Based in Cairo. Working across two continents.</h2>
+      </div>
+      <div class="region-list">
+        <div class="region"><b data-i18n="r1">Egypt</b><span data-i18n="r1s">Home base · hospitals & tenders</span></div>
+        <div class="region"><b data-i18n="r2">Gulf</b><span data-i18n="r2s">Clinical programmes</span></div>
+        <div class="region"><b data-i18n="r3">Africa</b><span data-i18n="r3s">Regional consulting lead</span></div>
+        <div class="region"><b data-i18n="r4">North Africa</b><span data-i18n="r4s">Digital health products</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSIGHTS -->
+<section class="sec alt" id="insights">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="label" data-i18n="i_label">Insights</span>
+      <h2 data-i18n="i_h">Notes from the theatre floor and the product roadmap.</h2>
+    </div>
+    <div class="posts">
+      <a class="post rv" href="#insights"><span class="label">AI strategy</span><h3 data-i18n="po1">Beyond the API wrapper: where vertical health AI becomes defensible</h3><p data-i18n="po_d">Draft. Link your article or LinkedIn post.</p><span class="more" data-i18n="read">Read →</span></a>
+      <a class="post rv" href="#insights"><span class="label">ERAS</span><h3 data-i18n="po2">Measure maturity before you write the protocol</h3><p data-i18n="po_d">Draft. Link your article or LinkedIn post.</p><span class="more" data-i18n="read">Read →</span></a>
+      <a class="post rv" href="#insights"><span class="label">Supply chain</span><h3 data-i18n="po3">From a supply chain scan to a control tower</h3><p data-i18n="po_d">Draft. Link your article or LinkedIn post.</p><span class="more" data-i18n="read">Read →</span></a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="band" id="contact">
+  <div class="wrap sec contact">
+    <div>
+      <div class="sec-head">
+        <span class="label" data-i18n="ct_label">Contact</span>
+        <h2 data-i18n="ct_h">Planning a surgical, supply chain or digital health project?</h2>
+        <p data-i18n="ct_p">Tell me what you're working on. I reply within two working days.</p>
+      </div>
+      <div class="contact-card">
+        <div class="copyline"><code id="mail">you@yourdomain.com</code><button class="chip-btn" type="button" id="copyBtn" data-i18n="copy">Copy</button></div>
+        <div class="copyline"><code>linkedin.com/in/your-profile</code></div>
+      </div>
+    </div>
+    <form class="enquiry" id="enquiry" novalidate>
+      <div class="row2">
+        <div class="field"><label for="f-name" data-i18n="fl_name">Name</label><input id="f-name" required autocomplete="name"></div>
+        <div class="field"><label for="f-org" data-i18n="fl_org">Organisation</label><input id="f-org" autocomplete="organization"></div>
+      </div>
+      <div class="field"><label for="f-email" data-i18n="fl_email">Email</label><input id="f-email" type="email" required autocomplete="email"></div>
+      <div class="field"><label for="f-topic" data-i18n="fl_topic">Topic</label>
+        <select id="f-topic"><option data-i18n="o1">Hospital & surgical consulting</option><option data-i18n="o2">Supply chain advisory</option><option data-i18n="o3">AI product strategy</option><option data-i18n="o4">Speaking invitation</option></select></div>
+      <div class="field"><label for="f-msg" data-i18n="fl_msg">Message</label><textarea id="f-msg" required></textarea></div>
+      <button class="btn btn-primary" type="submit" data-i18n="send">Send enquiry</button>
+      <p class="form-note" id="formNote" aria-live="polite"></p>
+    </form>
+  </div>
+  <footer><div class="wrap"><span>© 2026 Magdi Ayoub</span><span>Cairo, Egypt</span></div></footer>
+</section>
+</main>
+
+<a class="btn btn-primary fab" href="#contact" data-i18n="cta_short">Contact</a>
+
+<script>
+(function(){
+  /* ---------- theme ---------- */
+  const root=document.documentElement;
+  const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  const savedTheme=store.get('ma-theme'); if(savedTheme) root.setAttribute('data-theme',savedTheme);
+  document.getElementById('themeBtn').addEventListener('click',()=>{
+    const dark=getComputedStyle(root).colorScheme.includes('dark');
+    const next=dark?'light':'dark'; root.setAttribute('data-theme',next); store.set('ma-theme',next);
+  });
+  const css=n=>getComputedStyle(root).getPropertyValue(n).trim();
+
+  /* ---------- i18n ---------- */
+  const AR={
+    nav_work:"ما أقدمه",nav_cases:"المشاريع",nav_products:"المنتجات",nav_journey:"المسيرة",nav_contact:"تواصل",
+    hero_label:"مستشار رعاية صحية · استراتيجية منتجات الذكاء الاصطناعي · القاهرة",
+    hero_h1:"أنظمة جراحية أفضل. منتجات صحية <em>أذكى</em>.",
+    hero_lede:"أساعد المستشفيات في أفريقيا والشرق الأوسط على تقديم خدمات جراحية أكثر أمانًا وكفاءة، وأبني منتجات ذكاء اصطناعي تحوّل البيانات السريرية إلى قيمة مستدامة.",
+    cta_work:"اعمل معي",cta_cases:"شاهد المشاريع",cta_short:"تواصل",
+    v1:"متاح للأعمال الاستشارية",v2:"English · العربية",v3:"أفريقيا والشرق الأوسط",
+    ph_photo:"صورتك الشخصية",tag_title:"مستشار رئيسي",
+    s1:"سنوات في استشارات المستشفيات",s2:"خطوط خدمة من الجراحة إلى سلاسل الإمداد",s3:"مستشفيات تم تقييمها (أضف الرقم)",s4:"منتجات صحية قيد التطوير أو متاحة",
+    work_label:"ما أقدمه",work_h:"ثلاث ممارسات وهدف واحد: نتائج أفضل لكل سرير وكل غرفة عمليات وكل مريض.",
+    p1_h:"استشارات المستشفيات والجراحة",p1_p:"تشخيص وبرامج تحسين لغرف العمليات والمسارات المحيطة بالجراحة والخدمات السريرية.",
+    p1_a:"تقييم النشاط والطاقة الجراحية",p1_b:"نضج برامج ERAS وإدارة بيانات غرف العمليات",p1_c:"برامج ارتفاع ضغط الدم وإزالة التعصيب الكلوي",
+    p2_h:"استشارات سلاسل الإمداد",p2_p:"من مسح المخزون إلى تصميم مراكز التحكم لشبكات المستشفيات العامة والخاصة.",
+    p2_a:"مسح سلاسل الإمداد وتحليل الفجوات",p2_b:"مقترحات مراكز التحكم",p2_c:"جاهزية المستشفيات الجديدة",
+    p3_h:"استراتيجية منتجات الذكاء الاصطناعي",p3_p:"ذكاء اصطناعي متخصص يصعب تقليده، مبني على دورات البيانات والتكامل مع السجلات الطبية والشبكات السريرية.",
+    p3_a:"استراتيجية منتجات تتجاوز مجرد واجهات برمجية",p3_b:"منصات البيانات السريرية والسجلات",p3_c:"من النموذج الأولي إلى التجربة في أسابيع",
+    cases_label:"مشاريع مختارة",cases_h:"أعمال حديثة بدون ذكر أسماء العملاء.",cases_p:"لكل مشروع: السؤال، والمنهجية، وما الذي تغيّر.",
+    f_all:"الكل",f_surgery:"الجراحة",f_supply:"سلاسل الإمداد",f_prog:"البرامج السريرية",
+    k_surgery:"الجراحة",k_supply:"سلاسل الإمداد",k_prog:"برنامج سريري",
+    dt_q:"السؤال",dt_a:"المنهجية",dt_o:"النتيجة",
+    c1_h:"تقييم النشاط الجراحي، مستشفى جامعي تخصصي",c1_q:"أين تُفقد طاقة غرف العمليات، ولماذا؟",c1_a:"تدقيق استخدام الغرف ورسم المسارات ومقابلات الفريق.",c1_o:"خارطة طريق تحسين ذات أولويات. أضف النتيجة.",
+    c2_h:"مسح سلسلة الإمداد ومقترح مركز تحكم، شبكة مستشفيات عامة",c2_q:"ما مدى نضج سلسلة الإمداد، وما القابل للتوسع؟",c2_a:"مسح ميداني للمخازن والطلبات وبيانات الاستهلاك.",c2_o:"تصميم موقع تجريبي مع مسار للتوسع على مستوى الشبكة.",
+    c3_h:"عيادة ضغط الدم وخدمة إزالة التعصيب الكلوي، مدينة طبية عسكرية",c3_q:"كيف نؤسس مسارًا لارتفاع الضغط المقاوم تموّله الإدارة؟",c3_a:"تصميم الخدمة ودراسة الجدوى مع القادة السريريين.",c3_o:"تم تقديم المقترح للإدارة التنفيذية.",
+    c4_h:"تقييم الجراحة العامة، مستشفى معهد بحثي",c4_q:"كيف تقارن الخدمة الجراحية بأفضل الممارسات؟",c4_a:"قائمة نضج ERAS ومؤشرات النتائج ومراجعة بيانات العمليات.",c4_o:"تقرير مقارنة مع مكاسب سريعة. أضف النتيجة.",
+    prod_label:"المنتجات",prod_h:"برمجيات صحية بنيتها أو أعمل على بنائها.",ph_shot:"لقطة شاشة للمنتج",
+    b_pilot:"تجريبي",b_live:"متاح",b_concept:"فكرة",
+    pr1:"منصة ذكية لجمع بيانات الأبحاث السريرية، بديل حديث لـ REDCap.",
+    pr2:"تطبيق يشارك فيه أطباء القلب التداخلي الحالات، مع ذكاء اصطناعي ينظم كل حالة للمراجعة.",
+    pr3:"منصة لدورات التعليم الطبي المستمر المعتمدة في مصر والشرق الأوسط.",
+    pr4_h:"تقييم نضج ERAS",pr4:"قائمة تقييم تقيس مدى التزام المستشفى بإرشادات ERAS الدولية.",
+    j_label:"المسيرة",j_h:"من مستشار إلى قائد إقليمي.",
+    t1_h:"قائد حلول ارتفاع الضغط المقاوم وإزالة التعصيب الكلوي",t1_p:"قيادة حل إزالة التعصيب الكلوي على مستوى المنطقة.",
+    t2_h:"مستشار رئيسي",t2_p:"قيادة مشاريع أداء المستشفيات وسلاسل الإمداد.",
+    t3_h:"قائد الاستشارات، أفريقيا",t3_p:"بناء الممارسة الاستشارية في الأسواق الأفريقية.",
+    t4_h:"مستشار أول، Medtronic IHS",t4_p:"الانضمام إلى الحلول الصحية المتكاملة لتقديم برامج تحسين المستشفيات.",
+    t5_h:"المسيرة السابقة",t5_p:"أضف أدوارك السابقة ومؤهلاتك هنا.",
+    r_label:"أين أعمل",r_h:"مقيم في القاهرة. أعمل عبر قارتين.",
+    r1:"مصر",r1s:"المقر · مستشفيات ومناقصات",r2:"الخليج",r2s:"برامج سريرية",r3:"أفريقيا",r3s:"قائد الاستشارات الإقليمي",r4:"شمال أفريقيا",r4s:"منتجات الصحة الرقمية",
+    i_label:"رؤى",i_h:"ملاحظات من غرف العمليات وخرائط المنتجات.",
+    po1:"ما بعد الواجهة البرمجية: متى يصبح الذكاء الاصطناعي الصحي صعب التقليد",po2:"قِس النضج قبل كتابة البروتوكول",po3:"من مسح سلسلة الإمداد إلى مركز التحكم",
+    po_d:"مسودة. أضف رابط مقالك أو منشورك.",read:"اقرأ ←",
+    ct_label:"تواصل",ct_h:"تخطط لمشروع جراحي أو سلسلة إمداد أو صحة رقمية؟",ct_p:"أخبرني بما تعمل عليه. أرد خلال يومي عمل.",
+    copy:"نسخ",copied:"تم النسخ",fl_name:"الاسم",fl_org:"المؤسسة",fl_email:"البريد الإلكتروني",fl_topic:"الموضوع",fl_msg:"الرسالة",
+    o1:"استشارات المستشفيات والجراحة",o2:"استشارات سلاسل الإمداد",o3:"استراتيجية منتجات الذكاء الاصطناعي",o4:"دعوة للتحدث",
+    send:"أرسل الطلب",
+    note_ok:"هذه نسخة تجريبية من النموذج. سيتم ربطه ببريدك عند إطلاق الموقع.",note_err:"يرجى إدخال الاسم والبريد الإلكتروني والرسالة."
+  };
+  const EN={copied:"Copied",note_ok:"This is a preview form. It will be connected to your inbox when the site goes live.",note_err:"Please add your name, email and message."};
+  document.querySelectorAll('[data-i18n]').forEach(el=>{EN[el.dataset.i18n]=el.textContent});
+  document.querySelectorAll('[data-i18n-html]').forEach(el=>{EN[el.dataset.i18nHtml]=el.innerHTML});
+  let lang='en';
+  const t=k=>(lang==='ar'?AR:EN)[k]||EN[k]||k;
+  function applyLang(l){
+    lang=l; root.lang=l; root.dir=l==='ar'?'rtl':'ltr';
+    document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});
+    document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=t(el.dataset.i18nHtml)});
+    document.getElementById('langBtn').textContent=l==='ar'?'EN':'عربي';
+    store.set('ma-lang',l);
+  }
+  document.getElementById('langBtn').addEventListener('click',()=>applyLang(lang==='ar'?'en':'ar'));
+  if(store.get('ma-lang')==='ar') applyLang('ar');
+
+  /* ---------- filters ---------- */
+  const fbtns=document.querySelectorAll('.filters button');
+  fbtns.forEach(b=>b.addEventListener('click',()=>{
+    fbtns.forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false'));
+    document.querySelectorAll('.case').forEach(c=>{c.hidden=!(b.dataset.f==='all'||c.dataset.k===b.dataset.f)});
+  }));
+
+  /* ---------- copy + form ---------- */
+  const copyBtn=document.getElementById('copyBtn');
+  copyBtn.addEventListener('click',()=>{
+    const txt=document.getElementById('mail').textContent;
+    const done=()=>{copyBtn.textContent=t('copied');setTimeout(()=>copyBtn.textContent=t('copy'),1600)};
+    const fallback=()=>{const r=document.createRange();r.selectNodeContents(document.getElementById('mail'));const s=getSelection();s.removeAllRanges();s.addRange(r)};
+    if(navigator.clipboard){navigator.clipboard.writeText(txt).then(done,fallback)}else fallback();
+  });
+  document.getElementById('enquiry').addEventListener('submit',e=>{
+    e.preventDefault();
+    const ok=['f-name','f-email','f-msg'].every(id=>document.getElementById(id).value.trim());
+    document.getElementById('formNote').textContent=t(ok?'note_ok':'note_err');
+  });
+
+  /* ---------- reveal (visible at rest; small lift only) ---------- */
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduce && 'IntersectionObserver' in window){
+    const io=new IntersectionObserver(es=>es.forEach(en=>{if(en.isIntersecting){en.target.classList.remove('pre');io.unobserve(en.target)}}),{rootMargin:'0px 0px -8% 0px'});
+    document.querySelectorAll('.rv').forEach(el=>{const r=el.getBoundingClientRect();if(r.top>innerHeight){el.classList.add('pre');io.observe(el)}});
+  }
+
+  /* ---------- hero ECG trace ---------- */
+  const cv=document.getElementById('trace'),ctx=cv.getContext('2d');
+  let W=0,H=0,dpr=1,off=0;
+  function size(){dpr=Math.min(devicePixelRatio||1,2);W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0)}
+  function beat(x){ // one PQRST complex over period 260px
+    const p=((x%260)+260)%260;
+    if(p<30) return 0;
+    if(p<50) return -6*Math.sin((p-30)/20*Math.PI);
+    if(p<62) return 0;
+    if(p<68) return 8*(p-62)/6;
+    if(p<76) return 8-62*(p-68)/8;
+    if(p<84) return -54+64*(p-76)/8;
+    if(p<92) return 10-10*(p-84)/8;
+    if(p<130) return 0;
+    if(p<170) return -12*Math.sin((p-130)/40*Math.PI);
+    return 0;
+  }
+  function drawGrid(){
+    ctx.strokeStyle=css('--line');ctx.globalAlpha=.55;ctx.lineWidth=1;
+    for(let x=0;x<W;x+=24){ctx.beginPath();ctx.moveTo(x+.5,0);ctx.lineTo(x+.5,H);ctx.stroke()}
+    for(let y=0;y<H;y+=24){ctx.beginPath();ctx.moveTo(0,y+.5);ctx.lineTo(W,y+.5);ctx.stroke()}
+    ctx.globalAlpha=1;
+  }
+  function frame(){
+    ctx.clearRect(0,0,W,H);
+    drawGrid();
+    const base=H*0.86, teal=css('--teal'), amber=css('--amber');
+    const head=reduce?W:((off*2.2)%(W+200));
+    ctx.lineWidth=2;ctx.lineJoin='round';
+    ctx.beginPath();
+    for(let x=0;x<=Math.min(head,W);x+=2){const y=base+beat(x+40);x?ctx.lineTo(x,y):ctx.moveTo(x,y)}
+    const g=ctx.createLinearGradient(Math.max(0,head-W*.7),0,head,0);
+    g.addColorStop(0,'transparent');g.addColorStop(1,teal);
+    ctx.strokeStyle=reduce?teal:g;ctx.globalAlpha=.85;ctx.stroke();ctx.globalAlpha=1;
+    if(!reduce && head<=W){ctx.fillStyle=amber;ctx.beginPath();ctx.arc(head,base+beat(head+40),4,0,Math.PI*2);ctx.fill()}
+    off++;
+    if(!reduce) requestAnimationFrame(frame);
+  }
+  size();frame();
+  addEventListener('resize',()=>{size();if(reduce)frame()});
+  new MutationObserver(()=>{if(reduce)frame();drawMap()}).observe(root,{attributes:true,attributeFilter:['data-theme']});
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{if(reduce)frame();drawMap()});
+
+  /* ---------- region dot map (stylised, not to scale) ---------- */
+  const mc=document.getElementById('regionMap'),mx=mc.getContext('2d');
+  // coarse land mask for Africa + Arabian peninsula on a 30x30 grid
+  const rows=[
+    "........xxxxxxxxx.............",
+    "......xxxxxxxxxxxx.xx.........",
+    ".....xxxxxxxxxxxxx.xxxxx......",
+    "....xxxxxxxxxxxxxx..xxxxxx....",
+    "...xxxxxxxxxxxxxxxx.xxxxxxx...",
+    "...xxxxxxxxxxxxxxxx..xxxxxxx..",
+    "..xxxxxxxxxxxxxxxxxx.xxxxxx...",
+    "..xxxxxxxxxxxxxxxxxxx.xxxxx...",
+    "..xxxxxxxxxxxxxxxxxxxx.xxx....",
+    "...xxxxxxxxxxxxxxxxxxxx.......",
+    "....xxxxxxxxxxxxxxxxxxxxxx....",
+    ".....xxxxxxxxxxxxxxxxxxxxxx...",
+    "........xxxxxxxxxxxxxxxxxx....",
+    "..........xxxxxxxxxxxxxxx.....",
+    "...........xxxxxxxxxxxxxx.....",
+    "...........xxxxxxxxxxxxx......",
+    "............xxxxxxxxxxxx......",
+    "............xxxxxxxxxxx...x...",
+    "............xxxxxxxxxxx..xx...",
+    ".............xxxxxxxxxx..xx...",
+    ".............xxxxxxxxx...x....",
+    ".............xxxxxxxxx........",
+    "..............xxxxxxxx........",
+    "..............xxxxxxx.........",
+    "...............xxxxxx.........",
+    "...............xxxxx..........",
+    "................xxx...........",
+    "..............................",
+    "..............................",
+    ".............................."
+  ];
+  const hubs=[{c:16,r:3,k:'Cairo'},{c:24,r:6,k:'Riyadh'},{c:7,r:2,k:''},{c:18,r:14,k:''},{c:15,r:23,k:''}];
+  let mt=0;
+  function drawMap(){
+    const s=mc.clientWidth; if(!s) return;
+    const d=Math.min(devicePixelRatio||1,2); mc.width=s*d; mc.height=s*d; mx.setTransform(d,0,0,d,0,0);
+    const cell=s/30, teal=css('--teal'), amber=css('--amber'), line=css('--line'), ink=css('--ink');
+    mx.clearRect(0,0,s,s);
+    rows.forEach((row,r)=>[...row].forEach((ch,c)=>{
+      mx.fillStyle=ch==='x'?teal:line; mx.globalAlpha=ch==='x'?.35:.5;
+      mx.beginPath();mx.arc(c*cell+cell/2,r*cell+cell/2,cell*(ch==='x'?.28:.12),0,Math.PI*2);mx.fill();
+    }));
+    mx.globalAlpha=1;
+    const cx=hubs[0].c*cell+cell/2, cy=hubs[0].r*cell+cell/2;
+    hubs.slice(1).forEach(h=>{
+      const x=h.c*cell+cell/2,y=h.r*cell+cell/2;
+      mx.strokeStyle=teal;mx.lineWidth=1.4;mx.setLineDash([4,5]);
+      mx.beginPath();mx.moveTo(cx,cy);mx.quadraticCurveTo((cx+x)/2,Math.min(cy,y)-cell*3,x,y);mx.stroke();mx.setLineDash([]);
+      mx.fillStyle=teal;mx.beginPath();mx.arc(x,y,cell*.42,0,Math.PI*2);mx.fill();
+    });
+    const pulse=reduce?0:(Math.sin(mt/20)+1)/2;
+    mx.fillStyle=amber;mx.globalAlpha=.25;mx.beginPath();mx.arc(cx,cy,cell*(1+pulse*.9),0,Math.PI*2);mx.fill();mx.globalAlpha=1;
+    mx.beginPath();mx.arc(cx,cy,cell*.55,0,Math.PI*2);mx.fill();
+    mx.fillStyle=ink;mx.font=`600 ${Math.max(11,cell*.7)}px ${css('--f-mono')}`;
+    mx.fillText('Cairo',cx+cell*.9,cy+cell*.25);
+  }
+  function mapLoop(){mt++;drawMap();if(!reduce)requestAnimationFrame(mapLoop)}
+  mapLoop();
+  addEventListener('resize',drawMap);
+})();
+</script>
+
+</body></html>
